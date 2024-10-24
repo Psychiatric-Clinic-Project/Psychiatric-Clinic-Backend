@@ -1,11 +1,22 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
+import connectDB from "./Database/connection.js";
+import { adminRouter, authRouter } from "./src/modules/index.router.js";
 dotenv.config({ path: "./config/.env" });
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
+connectDB();
 app.use(express.json());
 
+app.use(cors());
+const BASE_URL= process.env.BASE_URL;
 
+app.use(`${BASE_URL}admin`,adminRouter);
+
+console.log(BASE_URL)
+
+app.use(`${BASE_URL}auth`,authRouter);
 
 app.use("*", (req, res) => {
   res.status(404).json({ message: "page is not found" });
