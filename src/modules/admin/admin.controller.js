@@ -1,5 +1,7 @@
 import bcrypt from "bcryptjs";
 import { SUCCESS_MESSAGE} from "../../constant.js";
+import { uploadFile } from "../../services/uploadFile.js";
+import { adminModel } from "../../../Database/models/admin.model.js";
 
 export const adminSignUp = async (req, res, next) => {
     try {
@@ -15,7 +17,7 @@ export const adminSignUp = async (req, res, next) => {
         img,
       });
   
-      return res.status(201).json({ message: SUCCESS_MESSAGE, admin });
+       return res.status(201).json({ message: SUCCESS_MESSAGE, admin });
     } catch (err) {
       next(new Error(err.message, { cause: 400 }));
     }
