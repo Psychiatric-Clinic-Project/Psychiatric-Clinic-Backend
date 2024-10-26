@@ -18,7 +18,11 @@ const adminSchema = new Schema(
         img:{
             type: String,
             required: true
-        }
+        },
+        role:{
+            type:String,
+            default:"admin"
+          }
     },
     {
         timestamps: true

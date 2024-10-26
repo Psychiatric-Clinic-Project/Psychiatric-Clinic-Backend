@@ -35,6 +35,10 @@ const advisorSchema = new Schema(
     skills: {
       type: String,
       required: true
+    },
+    role:{
+      type:String,
+      default:"advisor"
     }
   },
   {
