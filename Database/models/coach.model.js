@@ -34,7 +34,14 @@ const coachSchema = new Schema(
     skills: {
       type: String,
       required: true
-    }
+    }, verificationCode: { // New field to store verification code
+      type: String,
+      default: null
+    },
+    sendCode: { // This could track if a verification code was sent
+      type: Boolean,
+      default: false
+    },
   },
   {
     timestamps: true

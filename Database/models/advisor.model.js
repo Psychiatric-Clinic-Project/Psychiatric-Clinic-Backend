@@ -27,7 +27,7 @@ const advisorSchema = new Schema(
       type: Number,
       required: true
     },
-    
+
     phoneNumber: {
       type: String,
       required: true
@@ -35,7 +35,11 @@ const advisorSchema = new Schema(
     skills: {
       type: String,
       required: true
-    }
+    },
+    sendCode: {
+      type: String,
+      default: null,
+    },
   },
   {
     timestamps: true

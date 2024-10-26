@@ -45,7 +45,15 @@ const userSchema = new Schema(
         type: String,
         enum: USER_STATUS ,
         default: 'No Action Taken'
-      }
+      },
+      verificationCode: { // New field to store verification code
+        type: String,
+        default: null
+      },
+      sendCode: { // This could track if a verification code was sent
+        type: Boolean,
+        default: false
+      },
   },
   {
     timestamps: true
