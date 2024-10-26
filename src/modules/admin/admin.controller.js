@@ -34,7 +34,7 @@ export const addArticle = async (req, res) => {
   return res.success({newArticle},createdSuccessfullyMessage("Article",201))
 };
 
-export const getArticle = async (req, res) => {
+export const getArticles = async (req, res) => {
   const articles = await articleModel.find();
 
   return res.success({articles},retrievedSuccessfullyMessage("Articles"),200)
