@@ -1,4 +1,5 @@
 import { model, Schema } from "mongoose";
+import { USER_CATEGORY, USER_STATUS } from "../../src/constant";
 
 const userSchema = new Schema(
   {
@@ -29,7 +30,7 @@ const userSchema = new Schema(
     },
     category: {
       type: String,
-      enum: ['Anxiety', 'Depression', 'Bipolar Disorder', 'PTSD', 'OCD', 'Other'],  
+      enum: USER_CATEGORY,  
       required: true
     },
     phoneNumber: {
@@ -42,7 +43,7 @@ const userSchema = new Schema(
     },
     status: {
         type: String,
-        enum: ['Under Treatment', 'Recovered', 'No Action Taken', 'In Progress'],
+        enum: USER_STATUS ,
         default: 'No Action Taken'
       }
   },

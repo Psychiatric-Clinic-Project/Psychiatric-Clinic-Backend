@@ -1,7 +1,5 @@
 import { model, Schema } from "mongoose";
 
-
-
 const adminSchema = new Schema(
     {
         name:{
