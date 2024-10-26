@@ -26,20 +26,18 @@ export const adminSignUp = async (req, res, next) => {
 
   export const addArticle = async (req, res, next) => {
     try {
-      
       const { title, text,  category } = req.body;
+
       const img = await uploadFile(req.file.path);
 
-  
       const newArticle = new articleModel({
         title,
         text,
         img,
         category,
       });
-  
       await newArticle.save();
-  
+
       return res.status(201).json({ message: "Article created successfully", newArticle });
     } catch (error) {
       return res.status(500).json({ message: "Failed to create article", error });
@@ -64,15 +62,12 @@ export const adminSignUp = async (req, res, next) => {
   export const getArticleById = async (req, res, next) => {
     try {
       const { id } = req.params;
-      
-  
+
       const article = await articleModel.findById(id);
-      console.log("test")
   
       if (!article) {
         return res.status(404).json({ message: "Article not found" });
       }
-  
       return res.status(200).json(article);
     } catch (error) {
      return  res.status(500).json({ message: "Error retrieving article", error });
@@ -83,16 +78,14 @@ export const adminSignUp = async (req, res, next) => {
     try {
       const { id } = req.params;
   
-      // Find the article by uniqueID and delete it
       const deletedArticle = await articleModel.findOneAndDelete(id);
   
       if (!deletedArticle) {
         return res.status(404).json({ message: "Article not found" });
       }
-  
-      res.status(200).json({ message: "Article deleted successfully", deletedArticle });
+      return res.status(200).json({ message: "Article deleted successfully", deletedArticle });
     } catch (error) {
-      res.status(500).json({ message: "Error deleting article", error });
+      return res.status(500).json({ message: "Error deleting article", error });
     }
   };
 

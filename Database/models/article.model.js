@@ -2,7 +2,6 @@ import { model, Schema } from "mongoose";
 
 const articleSchema = new Schema(
   {
-    
     title: {
       type: String,
       required: true,
