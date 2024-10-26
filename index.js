@@ -19,12 +19,12 @@ app.use(`${BASE_URL}auth`,authRouter);
 app.use("*", (req, res) => {
    res.status(404).json({ message: "page is not found" });
 });
+
 app.use((err, req, res, next) => {
-  if (err) {
+    const statusCode=err.status || 500
     res
-      .status(err["cause"])
+      .status(statusCode)
       .json({ message: "catch error", error: err.message });
-  }
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
