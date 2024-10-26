@@ -3,57 +3,25 @@ import jwt from "jsonwebtoken";
 import { uploadFile } from "../../services/uploadFile.js";
 import { adminModel } from "../../../Database/models/admin.model.js";
 import { articleModel } from "../../../Database/models/article.model.js";
-import {SUCCESS_MESSAGE} from "./../../constant.js"
-export const adminSignUp = async (req, res, next) => {
-  try {
-    const { name, email, password } = req.body;
-    const img = await uploadFile(req.file.path);
+import { createdSuccessfullyMessage, deletedSuccessfullyMessage, notFoundMessage, retrievedSuccessfullyMessage } from "../../utils/index.js";
 
-    const hash = await bcrypt.hash(password, parseInt(process.env.SALTROUND));
+export const adminSignUp = async (req, res) => {
+  const { name, email, password } = req.body;
+  const img = await uploadFile(req.file.path);
 
-    const admin = await adminModel.create({
-      name,
-      email,
-      password: hash,
-      img,
-    });
+  const hash = await bcrypt.hash(password, parseInt(process.env.SALTROUND));
 
-    return res.status(201).json({ message: SUCCESS_MESSAGE, admin });
-  } catch (err) {
-    next(new Error(err.message, { cause: 400 }));
-  }
-};
-
-export const adminLogin = async (req, res,next) => {
-  const { email, password } = req.body;
-
-  const admin = await adminModel.findOne({
+  const admin = await adminModel.create({
+    name,
     email,
+    password: hash,
+    img,
   });
-  if (!admin) {
-    return next(new Error("account not found", { cause: 404 }));
-  }
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) {
-    return next(new Error("invalid password", { cause: 400 }));
-  }
-  const token = jwt.sign(
-    {
-      _id: user._id,
-      email: user.email,
-      name: user.name,
-    },
-    process.env.LOGINTOKEN,
-    {
-      expiresIn: 60 * 60 * 24,
-    }
-  );
-  return res.status(200).json({ message:SUCCESS_MESSAGE , token });
+  return res.success({ admin }, createdSuccessfullyMessage("Admin"), 201);
 };
 
-export const addArticle = async (req, res, next) => {
-  try {
-    const { title, text, category } = req.body;
+export const addArticle = async (req, res) => {
+  const { title, text, category } = req.body;
 
     const img = await uploadFile(req.file.path);
 
@@ -65,56 +33,33 @@ export const addArticle = async (req, res, next) => {
     });
     await newArticle.save();
 
-    return res
-      .status(201)
-      .json({ message: "Article created successfully", newArticle });
-  } catch (error) {
-    return res.status(500).json({ message: "Failed to create article", error });
-  }
+  return res.success({newArticle},createdSuccessfullyMessage("Article",201))
 };
 
-export const getArticle = async (req, res, next) => {
-  try {
-    const articles = await articleModel.find();
+export const getArticles = async (req, res) => {
+  const articles = await articleModel.find();
 
-    if (!articles || articles.length === 0) {
-      return res.status(404).json({ message: "No articles found" });
-    }
-
-    return res.status(200).json(articles);
-  } catch (error) {
-    return res.status(500).json({ message: "Error fetching articles", error });
-  }
+  return res.success({articles},retrievedSuccessfullyMessage("Articles"),200)
 };
 
-export const getArticleById = async (req, res, next) => {
-  try {
-    const { id } = req.params;
+export const getArticleById = async (req, res) => {
+  const { id } = req.params;
 
-    const article = await articleModel.findById(id);
+  const article = await articleModel.findById(id);
 
-    if (!article) {
-      return res.status(404).json({ message: "Article not found" });
-    }
-    return res.status(200).json(article);
-  } catch (error) {
-    return res.status(500).json({ message: "Error retrieving article", error });
+  if (!article) {
+    return res.error(notFoundMessage("article"),404)
   }
+  return res.success({article},retrievedSuccessfullyMessage("Article"),200) 
 };
 
-export const deleteArticle = async (req, res, next) => {
-  try {
-    const { id } = req.params;
+export const deleteArticle = async (req, res) => {
+  const { id } = req.params;
 
-    const deletedArticle = await articleModel.findOneAndDelete(id);
+  const deletedArticle = await articleModel.findOneAndDelete(id);
 
-    if (!deletedArticle) {
-      return res.status(404).json({ message: "Article not found" });
-    }
-    return res
-      .status(200)
-      .json({ message: "Article deleted successfully", deletedArticle });
-  } catch (error) {
-    return res.status(500).json({ message: "Error deleting article", error });
+  if (!deletedArticle) {
+    return res.error(notFoundMessage("article"),404)
   }
+  return res.success({deleteArticle},deletedSuccessfullyMessage("Article"),200)
 };
