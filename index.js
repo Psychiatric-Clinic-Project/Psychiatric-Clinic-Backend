@@ -13,7 +13,7 @@ app.use(cors());
 const BASE_URL= process.env.BASE_URL;
 
 app.use(`${BASE_URL}admin`,adminRouter);
-
+app.use(`${BASE_URL}user`,adminRouter);
 app.use(`${BASE_URL}auth`,authRouter);
 
 app.use("*", (req, res) => {

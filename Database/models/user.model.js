@@ -1,9 +1,9 @@
 import { model, Schema } from "mongoose";
-import { USER_CATEGORY, USER_STATUS } from "../../src/constant";
+import { USER_CATEGORY, USER_STATUS } from "../../src/constant.js";
 
 const userSchema = new Schema(
   {
-    name: {
+    username: {
       type: String,
       required: true
     },
