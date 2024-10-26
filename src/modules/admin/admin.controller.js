@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import { uploadFile } from "../../services/uploadFile.js";
-import { adminModel } from "../../../Database/models/admin.model.js";
-import { articleModel } from "../../../Database/models/article.model.js";
+import { articleModel } from "../../../database/models/article.model.js";
 import { createdSuccessfullyMessage, deletedSuccessfullyMessage, notFoundMessage, retrievedSuccessfullyMessage } from "../../utils/index.js";
+import { adminModel } from "../../../database/models/admin.model.js";
 
 export const adminSignUp = async (req, res) => {
   const { name, email, password } = req.body;
