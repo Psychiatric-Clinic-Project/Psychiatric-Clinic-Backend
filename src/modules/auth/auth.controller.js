@@ -1,19 +1,18 @@
 import bcrypt from "bcryptjs";
 import { userModel } from "../../../Database/models/user.model.js";
 import sendEmail from "../../utils/email.js";
-import { emialTemplate } from "../../utils/EmailTemplate.js";
 import jwt from "jsonwebtoken";
-import { nanoid } from "nanoid";
 import { advisorModel } from "../../../Database/models/advisor.model.js";
 import { coachModel } from "../../../Database/models/coach.model.js";
 import { ROLES } from "../../constant.js";
+import { createdSuccessfullyMessage, notFoundMessage } from "../../utils/index.js";
 
 export const userSignUp = async (req, res) => {
     const { username, email, password, age, category, phoneNumber } = req.body;
 
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
-        return res.status(400).json({ message: "User already exists" });
+        return res.error("User already exist",404)
     }
     const hash = await bcrypt.hash(password, parseInt(process.env.SALTROUND));
     const newUser = new userModel({
@@ -32,7 +31,8 @@ export const userSignUp = async (req, res) => {
     const token = jwt.sign({ userId: newUser._id,role:ROLES.user }, process.env.LOGINTOKEN, { expiresIn: "1h" });
     const verificationUrl = `${req.protocol}://${req.headers.host}${process.env.BASE_URL}auth/verify-email/${token}`;
     await sendEmail(username, email, verificationUrl);
-    return res.status(201).json({ message: "User registered successfully", userId: newUser._id, token });
+    return res.success({userId: newUser._id, token },createdSuccessfullyMessage("User"),200)
+
 };
 
 
@@ -40,7 +40,7 @@ export const verifyEmail = async (req, res) => {
     const { token } = req.params;
 
     if (!token) {
-        return res.status(400).json({ message: "Token is required" });
+        return res.error( "Token is required",404 );
     }
     const decoded = jwt.verify(token, process.env.LOGINTOKEN);
 
@@ -56,7 +56,7 @@ export const verifyEmail = async (req, res) => {
          user = await coachModel.findById(userId);
     }
     if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        return res.success(notFoundMessage("User"),404)
     }
     user.isVerified = true;
     await user.save();
