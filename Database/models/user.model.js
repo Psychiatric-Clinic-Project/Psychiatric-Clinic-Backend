@@ -3,56 +3,66 @@ import { USER_CATEGORY, USER_STATUS } from "../../src/constant.js";
 
 const userSchema = new Schema(
   {
-    name: {
+    username: {
       type: String,
-      required: true
+      required: true,
     },
     email: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     password: {
       type: String,
-      required: true
+      required: true,
     },
     isVerified: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isBlocked: {
       type: Boolean,
-      default: false
+      default: false,
     },
     age: {
       type: Number,
-      required: true
+      required: true,
     },
     category: {
       type: String,
-      enum: USER_CATEGORY,  
-      required: true
+      enum: USER_CATEGORY,
+      required: true,
     },
     phoneNumber: {
       type: String,
-      required: true
+      required: true,
     },
     unKnownMember: {
       type: Boolean,
-      default: false
+      default: false,
     },
     status: {
-        type: String,
-        enum: USER_STATUS ,
-        default: 'No Action Taken'
-      },
-      role:{
-        type:String,
-        default:"user"
-      }
+      type: String,
+      enum: USER_STATUS,
+      default: "No Action Taken",
+    },
+    verificationCode: {
+      // New field to store verification code
+      type: String,
+      default: null,
+    },
+    sendCode: {
+      // This could track if a verification code was sent
+      type: Boolean,
+      default: false,
+    },
+    role: {
+      type: String,
+      default: "user",
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 

@@ -4,44 +4,54 @@ const coachSchema = new Schema(
   {
     name: {
       type: String,
-      required: true
+      required: true,
     },
     email: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     password: {
       type: String,
-      required: true
+      required: true,
     },
     isVerified: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isBlocked: {
       type: Boolean,
-      default: false
+      default: false,
     },
     age: {
       type: Number,
-      required: true
+      required: true,
     },
     phoneNumber: {
       type: String,
-      required: true
+      required: true,
     },
     skills: {
       type: String,
-      required: true
+      required: true,
     },
-    role:{
-      type:String,
-      default:"coach"
-    }
+    verificationCode: {
+      // New field to store verification code
+      type: String,
+      default: null,
+    },
+    sendCode: {
+      // This could track if a verification code was sent
+      type: Boolean,
+      default: false,
+    },
+    role: {
+      type: String,
+      default: "coach",
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
