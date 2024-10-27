@@ -4,45 +4,49 @@ const advisorSchema = new Schema(
   {
     name: {
       type: String,
-      required: true
+      required: true,
     },
     email: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     password: {
       type: String,
-      required: true
+      required: true,
     },
     isVerified: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isBlocked: {
       type: Boolean,
-      default: false
+      default: false,
     },
     age: {
       type: Number,
-      required: true
+      required: true,
     },
 
     phoneNumber: {
       type: String,
-      required: true
+      required: true,
     },
     skills: {
       type: String,
-      required: true
+      required: true,
     },
     sendCode: {
       type: String,
       default: null,
     },
+    role: {
+      type: String,
+      default: "advisor",
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 

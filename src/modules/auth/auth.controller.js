@@ -1,11 +1,60 @@
-import bcrypt from "bcryptjs";
-import { userModel } from "../../../Database/models/user.model.js";
-import sendEmail from "../../utils/email.js";
 import jwt from "jsonwebtoken";
-import { advisorModel } from "../../../Database/models/advisor.model.js";
-import { coachModel } from "../../../Database/models/coach.model.js";
+import bcrypt from "bcrypt"
+import { adminModel } from "../../../database/models/admin.model.js";
+import { coachModel } from "../../../database/models/coach.model.js";
+import { userModel } from "../../../database/models/user.model.js";
+import { advisorModel } from "../../../database/models/advisor.model.js";
+import { notFoundMessage, retrievedSuccessfullyMessage,createdSuccessfullyMessage } from "../../utils/index.js";
 import { ROLES } from "../../constant.js";
-import { createdSuccessfullyMessage, notFoundMessage } from "../../utils/index.js";
+import sendEmail from "../../utils/email.js";
+
+export const signIn = async (req, res) => {
+  const { email, password } = req.body;
+
+  let user = await adminModel.findOne({
+    email,
+  });
+
+  if (!user) {
+    user = await userModel.findOne({
+       email,
+    });
+  }
+  if (!user) {
+    user = await advisorModel.findOne({
+       email,
+    });
+  }
+  if (!user) {
+    user = await coachModel.findOne({
+       email,
+    });
+  }
+  if (!user) {
+    return res.error(notFoundMessage("Account"), 404);
+  }
+  if (user.role !== ROLES.admin && !user.isVerified) {
+    return res.error("Please verify your email", 400);
+  }
+
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) {
+    return res.error("Invalid password", 500);
+  }
+
+  const token = jwt.sign(
+    {
+      id: user._id,
+      role:user.role
+    },
+    process.env.LOGINTOKEN,
+    {
+      expiresIn: 60 * 60 * 24,
+    }
+  );
+
+  return res.success({ token }, retrievedSuccessfullyMessage("Account"), 200);
+};
 
 export const userSignUp = async (req, res) => {
     const { username, email, password, age, category, phoneNumber } = req.body;
@@ -31,7 +80,7 @@ export const userSignUp = async (req, res) => {
     const token = jwt.sign({ userId: newUser._id,role:ROLES.user }, process.env.LOGINTOKEN, { expiresIn: "1h" });
     const verificationUrl = `${req.protocol}://${req.headers.host}${process.env.BASE_URL}auth/verify-email/${token}`;
     await sendEmail(username, email, verificationUrl);
-    return res.success({userId: newUser._id, token },createdSuccessfullyMessage("User"),200)
+    return res.success({userId: newUser._id, token },createdSuccessfullyMessage("User"),201)
 
 };
 
@@ -40,10 +89,9 @@ export const verifyEmail = async (req, res) => {
     const { token } = req.params;
 
     if (!token) {
-        return res.error( "Token is required",404 );
+        return res.error( "Token is required",500 );
     }
     const decoded = jwt.verify(token, process.env.LOGINTOKEN);
-
     const userId = decoded.userId;
     let user;
     if(decoded.role=== ROLES.user){
@@ -60,7 +108,7 @@ export const verifyEmail = async (req, res) => {
     }
     user.isVerified = true;
     await user.save();
-    return res.status(200).json({ message: "Email verified successfully!" });
+    return res.success("Email verified successfully!",200);
 };
 
   
