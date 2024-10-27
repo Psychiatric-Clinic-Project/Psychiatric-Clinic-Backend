@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import connectDB from "./Database/connection.js";
+import connectDB from "./database/connection.js";
 import { adminRouter, authRouter } from "./src/modules/index.router.js";
 import { customResponse } from "./src/middleWare/customResponse.js";
 import { notFoundMessage } from "./src/utils/index.js";

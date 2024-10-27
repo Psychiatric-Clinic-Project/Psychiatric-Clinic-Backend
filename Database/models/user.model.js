@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { USER_CATEGORY, USER_STATUS } from "../../src/constant";
+import { USER_CATEGORY, USER_STATUS } from "../../src/constant.js";
 
 const userSchema = new Schema(
   {
@@ -45,6 +45,10 @@ const userSchema = new Schema(
         type: String,
         enum: USER_STATUS ,
         default: 'No Action Taken'
+      },
+      role:{
+        type:String,
+        default:"user"
       }
   },
   {
