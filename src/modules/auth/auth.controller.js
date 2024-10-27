@@ -84,7 +84,6 @@ export const userSignUp = async (req, res) => {
 
 };
 
-
 export const verifyEmail = async (req, res) => {
     const { token } = req.params;
 
@@ -110,6 +109,3 @@ export const verifyEmail = async (req, res) => {
     await user.save();
     return res.success("Email verified successfully!",200);
 };
-
-  
-

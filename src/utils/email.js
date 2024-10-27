@@ -26,4 +26,3 @@ const sendEmail = async (username, to, verificationUrl) => {
 };
 
 export default sendEmail;
-

@@ -5,7 +5,7 @@ import {  userSignUp, verifyEmail } from "./auth.controller.js";
 
 const router = Router();
 
-router.post("/userSignup", asyncHandler(userSignUp));
+router.post("/user-signup", asyncHandler(userSignUp));
 router.get("/verify-email/:token", asyncHandler(verifyEmail));
 router.post("/signin",asyncHandler(signIn))
 
