@@ -14,7 +14,6 @@ export const adminSignUp = async (req, res) => {
   const img = await uploadFile(req.file.path);
 
   const hash = await bcrypt.hash(password, parseInt(process.env.SALTROUND));
-
   const admin = await adminModel.create({
     name,
     email,
@@ -28,7 +27,6 @@ export const addArticle = async (req, res) => {
   const { title, text, category } = req.body;
 
   const img = await uploadFile(req.file.path);
-
   const newArticle = new articleModel({
     title,
     text,
@@ -58,7 +56,6 @@ export const getArticleById = async (req, res) => {
   const { id } = req.params;
 
   const article = await articleModel.findById(id);
-
   if (!article) {
     return res.error(notFoundMessage("article"), 404);
   }
