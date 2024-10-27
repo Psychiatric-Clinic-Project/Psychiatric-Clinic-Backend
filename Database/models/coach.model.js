@@ -34,6 +34,10 @@ const coachSchema = new Schema(
     skills: {
       type: String,
       required: true
+    },
+    role:{
+      type:String,
+      default:"coach"
     }
   },
   {
