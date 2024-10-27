@@ -39,7 +39,8 @@ export const addArticle = async (req, res) => {
 
   return res.success(
     { newArticle },
-    createdSuccessfullyMessage("Article", 201)
+    createdSuccessfullyMessage("Article"),
+    201
   );
 };
 
