@@ -8,6 +8,8 @@ import {
   getArticles,
 } from "./admin.controller.js";
 import { asyncHandler } from "../../middleWare/asyncHandler.js";
+import { auth } from "../../middleWare/auth.js";
+import { ROLES } from "../../constant.js";
 const router = Router();
 
 router.post(
@@ -16,6 +18,7 @@ router.post(
   HME,
   asyncHandler(adminSignUp)
 );
+router.use(auth([ROLES.admin]))
 router.post(
   "/add/article",
   myMulter(multerValidation.image).single("image"),
