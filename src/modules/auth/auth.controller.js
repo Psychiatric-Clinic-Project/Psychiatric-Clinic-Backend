@@ -15,7 +15,7 @@ export const userSignUp = async (req, res) => {
 
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
-        return res.error("User already exist",404)
+        return res.error("User already exist",409)
     }
     const hash = await bcrypt.hash(password, parseInt(process.env.SALTROUND));
     const newUser = new userModel({
@@ -25,10 +25,6 @@ export const userSignUp = async (req, res) => {
         age,
         category,
         phoneNumber,
-        isVerified: false,
-        isBlocked: false,
-        unKnownMember: false,
-        status: "Under Treatment"
     });
     await newUser.save();
     const token = jwt.sign({ userId: newUser._id,role:ROLES.user }, process.env.LOGINTOKEN, { expiresIn: "1h" });
@@ -62,6 +58,31 @@ export const advisorSignUp = async (req, res) => {
   
   await sendEmail(name, email, verificationUrl);
   return res.success({advisorId: newAdvisor._id, token },createdSuccessfullyMessage("Advisor"),201);
+};
+
+export const coachSignUp = async (req, res) => {
+  const { name, email, password, age, phoneNumber, skills } = req.body;
+
+  const existingCoach = await coachModel.findOne({ email });
+  if (existingCoach) {
+    return res.error("Coach already exist",409)
+   }
+  const hash = await bcrypt.hash(password, parseInt(process.env.SALTROUND));
+  
+  const newCoach = new coachModel({
+    name,
+    email,
+    password: hash,
+    age,
+    phoneNumber,
+    skills,
+  });
+  await newCoach.save();
+  const token = jwt.sign({ coachId: newCoach._id, role: "coach" }, process.env.LOGINTOKEN, { expiresIn: "1h" });
+  const verificationUrl = `${req.protocol}://${req.headers.host}${process.env.BASE_URL}auth/verify-email/${token}`;
+  
+  await sendEmail(name, email, verificationUrl);
+  return res.success({coachId: newCoach._id, token },createdSuccessfullyMessage("Coach"),201);
 };
 
 export const verifyEmail = async (req, res) => {
@@ -137,3 +158,4 @@ export const signIn = async (req, res) => {
 
   return res.success({ token }, retrievedSuccessfullyMessage("Account"), 200);
 };
+
