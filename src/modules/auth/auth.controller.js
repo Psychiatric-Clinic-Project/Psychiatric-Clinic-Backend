@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 import { adminModel } from "../../../database/models/admin.model.js";
 import { coachModel } from "../../../database/models/coach.model.js";
 import { userModel } from "../../../database/models/user.model.js";
@@ -84,6 +84,33 @@ export const userSignUp = async (req, res) => {
 
 };
 
+export const coachSignUp = async (req, res,next) => {
+  const { name, email, password, age, phoneNumber, skills } = req.body;
+
+  const existingCoach = await coachModel.findOne({ email });
+  if (existingCoach) {
+    return res.error("Coach already exist",404)
+   }
+  const hash = await bcrypt.hash(password, parseInt(process.env.SALTROUND));
+  
+  const newCoach = new coachModel({
+    name,
+    email,
+    password: hash,
+    age,
+    phoneNumber,
+    skills,
+    isVerified: false,
+    isBlocked: false,
+  });
+  await newCoach.save();
+  const token = jwt.sign({ coachId: newCoach._id, role: "coach" }, process.env.LOGINTOKEN, { expiresIn: "1h" });
+  const verificationUrl = `${req.protocol}://${req.headers.host}${process.env.BASE_URL}auth/verify-email/${token}`;
+  
+  await sendEmail(name, email, verificationUrl);
+  return res.success({coachId: newCoach._id, token },createdSuccessfullyMessage("Coach"),201);
+};
+
 export const verifyEmail = async (req, res) => {
     const { token } = req.params;
 
@@ -109,3 +136,4 @@ export const verifyEmail = async (req, res) => {
     await user.save();
     return res.success("Email verified successfully!",200);
 };
+
