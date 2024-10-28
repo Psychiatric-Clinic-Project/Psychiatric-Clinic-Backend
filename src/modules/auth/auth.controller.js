@@ -38,12 +38,12 @@ export const userSignUp = async (req, res) => {
 
 };
 
-export const advisorSignUp = async (req, res,next) => {
+export const advisorSignUp = async (req, res) => {
   const { name, email, password, age, phoneNumber, skills } = req.body;
 
   const existingAdvisor = await advisorModel.findOne({ email });
   if (existingAdvisor) {
-    return res.error("Advisor already exist",404) 
+    return res.error("Advisor already exist",409) 
    }
   const hash = await bcrypt.hash(password, parseInt(process.env.SALTROUND));
   
@@ -54,8 +54,6 @@ export const advisorSignUp = async (req, res,next) => {
     age,
     phoneNumber,
     skills,
-    isVerified: false,
-    isBlocked: false,
   });
   await newAdvisor.save();
 
