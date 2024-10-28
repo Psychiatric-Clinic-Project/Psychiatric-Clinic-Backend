@@ -8,60 +8,14 @@ import { notFoundMessage, retrievedSuccessfullyMessage,createdSuccessfullyMessag
 import { ROLES } from "../../constant.js";
 import sendEmail from "../../utils/email.js";
 
-export const signIn = async (req, res) => {
-  const { email, password } = req.body;
 
-  let user = await adminModel.findOne({
-    email,
-  });
-
-  if (!user) {
-    user = await userModel.findOne({
-       email,
-    });
-  }
-  if (!user) {
-    user = await advisorModel.findOne({
-       email,
-    });
-  }
-  if (!user) {
-    user = await coachModel.findOne({
-       email,
-    });
-  }
-  if (!user) {
-    return res.error(notFoundMessage("Account"), 404);
-  }
-  if (user.role !== ROLES.admin && !user.isVerified) {
-    return res.error("Please verify your email", 400);
-  }
-
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) {
-    return res.error("Invalid password", 500);
-  }
-
-  const token = jwt.sign(
-    {
-      id: user._id,
-      role:user.role
-    },
-    process.env.LOGINTOKEN,
-    {
-      expiresIn: 60 * 60 * 24,
-    }
-  );
-
-  return res.success({ token }, retrievedSuccessfullyMessage("Account"), 200);
-};
 
 export const userSignUp = async (req, res) => {
     const { username, email, password, age, category, phoneNumber } = req.body;
 
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
-        return res.error("User already exist",404)
+        return res.error("User already exist",409)
     }
     const hash = await bcrypt.hash(password, parseInt(process.env.SALTROUND));
     const newUser = new userModel({
@@ -71,10 +25,6 @@ export const userSignUp = async (req, res) => {
         age,
         category,
         phoneNumber,
-        isVerified: false,
-        isBlocked: false,
-        unKnownMember: false,
-        status: "Under Treatment"
     });
     await newUser.save();
     const token = jwt.sign({ userId: newUser._id,role:ROLES.user }, process.env.LOGINTOKEN, { expiresIn: "1h" });
@@ -82,6 +32,32 @@ export const userSignUp = async (req, res) => {
     await sendEmail(username, email, verificationUrl);
     return res.success({userId: newUser._id, token },createdSuccessfullyMessage("User"),201)
 
+};
+
+export const advisorSignUp = async (req, res) => {
+  const { name, email, password, age, phoneNumber, skills } = req.body;
+
+  const existingAdvisor = await advisorModel.findOne({ email });
+  if (existingAdvisor) {
+    return res.error("Advisor already exist",409) 
+   }
+  const hash = await bcrypt.hash(password, parseInt(process.env.SALTROUND));
+  
+  const newAdvisor = new advisorModel({
+    name,
+    email,
+    password: hash,
+    age,
+    phoneNumber,
+    skills,
+  });
+  await newAdvisor.save();
+
+  const token = jwt.sign({ advisorId: newAdvisor._id, role: "advisor" }, process.env.LOGINTOKEN, { expiresIn: "1h" });
+  const verificationUrl = `${req.protocol}://${req.headers.host}${process.env.BASE_URL}auth/verify-email/${token}`;
+  
+  await sendEmail(name, email, verificationUrl);
+  return res.success({advisorId: newAdvisor._id, token },createdSuccessfullyMessage("Advisor"),201);
 };
 
 export const coachSignUp = async (req, res) => {
@@ -133,5 +109,53 @@ export const verifyEmail = async (req, res) => {
     user.isVerified = true;
     await user.save();
     return res.success("Email verified successfully!",200);
+};
+
+export const signIn = async (req, res) => {
+  const { email, password } = req.body;
+
+  let user = await adminModel.findOne({
+    email,
+  });
+
+  if (!user) {
+    user = await userModel.findOne({
+       email,
+    });
+  }
+  if (!user) {
+    user = await advisorModel.findOne({
+       email,
+    });
+  }
+  if (!user) {
+    user = await coachModel.findOne({
+       email,
+    });
+  }
+  if (!user) {
+    return res.error(notFoundMessage("Account"), 404);
+  }
+  if (user.role !== ROLES.admin && !user.isVerified) {
+    return res.error("Please verify your email", 400);
+  }
+
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) {
+    return res.error("Invalid password", 500);
+  }
+
+  const token = jwt.sign(
+    {
+      id: user._id,
+      role:user.role
+    },
+    process.env.LOGINTOKEN,
+    {
+      expiresIn: 60 * 60 * 24,
+    }
+  );
+
+  return res.success({ token }, retrievedSuccessfullyMessage("Account"), 200);
 };
 
