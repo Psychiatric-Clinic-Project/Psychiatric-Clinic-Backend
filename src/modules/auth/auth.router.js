@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { signIn } from "./auth.controller.js";
+import { advisorSignUp, signIn ,userSignUp,verifyEmail} from "./auth.controller.js";
 import { asyncHandler } from "../../middleWare/asyncHandler.js";
-import {  userSignUp, verifyEmail } from "./auth.controller.js";
+
 
 const router = Router();
 
 router.post("/user-signup", asyncHandler(userSignUp));
+router.post("/advisor-signup", asyncHandler(advisorSignUp));
 router.get("/verify-email/:token", asyncHandler(verifyEmail));
 router.post("/signin",asyncHandler(signIn))
 
