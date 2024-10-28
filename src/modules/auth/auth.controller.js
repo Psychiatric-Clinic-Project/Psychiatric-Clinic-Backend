@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 import { adminModel } from "../../../database/models/admin.model.js";
 import { coachModel } from "../../../database/models/coach.model.js";
 import { userModel } from "../../../database/models/user.model.js";
@@ -7,6 +7,88 @@ import { advisorModel } from "../../../database/models/advisor.model.js";
 import { notFoundMessage, retrievedSuccessfullyMessage,createdSuccessfullyMessage } from "../../utils/index.js";
 import { ROLES } from "../../constant.js";
 import sendEmail from "../../utils/email.js";
+
+
+
+export const userSignUp = async (req, res) => {
+    const { username, email, password, age, category, phoneNumber } = req.body;
+
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) {
+        return res.error("User already exist",404)
+    }
+    const hash = await bcrypt.hash(password, parseInt(process.env.SALTROUND));
+    const newUser = new userModel({
+        username,
+        email,
+        password: hash,
+        age,
+        category,
+        phoneNumber,
+        isVerified: false,
+        isBlocked: false,
+        unKnownMember: false,
+        status: "Under Treatment"
+    });
+    await newUser.save();
+    const token = jwt.sign({ userId: newUser._id,role:ROLES.user }, process.env.LOGINTOKEN, { expiresIn: "1h" });
+    const verificationUrl = `${req.protocol}://${req.headers.host}${process.env.BASE_URL}auth/verify-email/${token}`;
+    await sendEmail(username, email, verificationUrl);
+    return res.success({userId: newUser._id, token },createdSuccessfullyMessage("User"),201)
+
+};
+
+export const advisorSignUp = async (req, res) => {
+  const { name, email, password, age, phoneNumber, skills } = req.body;
+
+  const existingAdvisor = await advisorModel.findOne({ email });
+  if (existingAdvisor) {
+    return res.error("Advisor already exist",409) 
+   }
+  const hash = await bcrypt.hash(password, parseInt(process.env.SALTROUND));
+  
+  const newAdvisor = new advisorModel({
+    name,
+    email,
+    password: hash,
+    age,
+    phoneNumber,
+    skills,
+  });
+  await newAdvisor.save();
+
+  const token = jwt.sign({ advisorId: newAdvisor._id, role: "advisor" }, process.env.LOGINTOKEN, { expiresIn: "1h" });
+  const verificationUrl = `${req.protocol}://${req.headers.host}${process.env.BASE_URL}auth/verify-email/${token}`;
+  
+  await sendEmail(name, email, verificationUrl);
+  return res.success({advisorId: newAdvisor._id, token },createdSuccessfullyMessage("Advisor"),201);
+};
+
+export const verifyEmail = async (req, res) => {
+    const { token } = req.params;
+
+    if (!token) {
+        return res.error( "Token is required",500 );
+    }
+    const decoded = jwt.verify(token, process.env.LOGINTOKEN);
+    const userId = decoded.userId;
+    let user;
+    if(decoded.role=== ROLES.user){
+       user = await userModel.findById(userId);
+    }
+    if(decoded.role=== ROLES.advisor){
+        user = await advisorModel.findById(userId);
+    }
+    if(decoded.role=== ROLES.coach){
+         user = await coachModel.findById(userId);
+    }
+    if (!user) {
+        return res.success(notFoundMessage("User"),404)
+    }
+    user.isVerified = true;
+    await user.save();
+    return res.success("Email verified successfully!",200);
+};
 
 export const signIn = async (req, res) => {
   const { email, password } = req.body;
@@ -54,58 +136,4 @@ export const signIn = async (req, res) => {
   );
 
   return res.success({ token }, retrievedSuccessfullyMessage("Account"), 200);
-};
-
-export const userSignUp = async (req, res) => {
-    const { username, email, password, age, category, phoneNumber } = req.body;
-
-    const existingUser = await userModel.findOne({ email });
-    if (existingUser) {
-        return res.error("User already exist",404)
-    }
-    const hash = await bcrypt.hash(password, parseInt(process.env.SALTROUND));
-    const newUser = new userModel({
-        username,
-        email,
-        password: hash,
-        age,
-        category,
-        phoneNumber,
-        isVerified: false,
-        isBlocked: false,
-        unKnownMember: false,
-        status: "Under Treatment"
-    });
-    await newUser.save();
-    const token = jwt.sign({ userId: newUser._id,role:ROLES.user }, process.env.LOGINTOKEN, { expiresIn: "1h" });
-    const verificationUrl = `${req.protocol}://${req.headers.host}${process.env.BASE_URL}auth/verify-email/${token}`;
-    await sendEmail(username, email, verificationUrl);
-    return res.success({userId: newUser._id, token },createdSuccessfullyMessage("User"),201)
-
-};
-
-export const verifyEmail = async (req, res) => {
-    const { token } = req.params;
-
-    if (!token) {
-        return res.error( "Token is required",500 );
-    }
-    const decoded = jwt.verify(token, process.env.LOGINTOKEN);
-    const userId = decoded.userId;
-    let user;
-    if(decoded.role=== ROLES.user){
-       user = await userModel.findById(userId);
-    }
-    if(decoded.role=== ROLES.advisor){
-        user = await advisorModel.findById(userId);
-    }
-    if(decoded.role=== ROLES.coach){
-         user = await coachModel.findById(userId);
-    }
-    if (!user) {
-        return res.success(notFoundMessage("User"),404)
-    }
-    user.isVerified = true;
-    await user.save();
-    return res.success("Email verified successfully!",200);
 };
