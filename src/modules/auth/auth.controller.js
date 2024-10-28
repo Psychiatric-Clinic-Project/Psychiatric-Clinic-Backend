@@ -84,12 +84,12 @@ export const userSignUp = async (req, res) => {
 
 };
 
-export const coachSignUp = async (req, res,next) => {
+export const coachSignUp = async (req, res) => {
   const { name, email, password, age, phoneNumber, skills } = req.body;
 
   const existingCoach = await coachModel.findOne({ email });
   if (existingCoach) {
-    return res.error("Coach already exist",404)
+    return res.error("Coach already exist",409)
    }
   const hash = await bcrypt.hash(password, parseInt(process.env.SALTROUND));
   
@@ -100,8 +100,6 @@ export const coachSignUp = async (req, res,next) => {
     age,
     phoneNumber,
     skills,
-    isVerified: false,
-    isBlocked: false,
   });
   await newCoach.save();
   const token = jwt.sign({ coachId: newCoach._id, role: "coach" }, process.env.LOGINTOKEN, { expiresIn: "1h" });
