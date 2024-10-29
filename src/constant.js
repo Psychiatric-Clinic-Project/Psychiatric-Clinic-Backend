@@ -2,6 +2,8 @@ export const USER_CATEGORY = ['Anxiety', 'Depression', 'Bipolar Disorder', 'PTSD
 
 export const USER_STATUS = ['Under Treatment', 'Recovered', 'No Action Taken', 'In Progress'];
 
+
+
 export const ROLES ={
     user :"user",
     admin: "admin",
