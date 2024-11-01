@@ -27,9 +27,7 @@ const sendEmail = async (username, to, verificationUrl) => {
             html: emailContent,
         });
         
-        console.log("Email sent: ", info.response);
     } catch (error) {
-        console.error("Error sending email:", error);
         throw new Error("Could not send email");
     }
 };
