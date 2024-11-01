@@ -4,9 +4,14 @@ import { coachModel } from "../../database/models/coach.model.js";
 import { advisorModel } from "../../database/models/advisor.model.js";
 import { userModel } from "../../database/models/user.model.js";
 import { notFoundMessage } from "../utils/index.js";
+import { asyncHandler } from "./asyncHandler.js";
 
 export const auth = (accessRoles = []) => {
-  return async (req, res, next) => {
+  return asyncHandler(async (req, res, next) => {
+    if(!req.headers?.token){
+      return res.error("Token missing from header", 500);
+    }
+
     let { token } = req.headers;
 
     if (!token.startsWith(process.env.AUTH_BEARER_TOKEN)) {
@@ -37,10 +42,10 @@ export const auth = (accessRoles = []) => {
     if (!user) {
       return res.error(notFoundMessage("Account"), 404);
     }
-    if (!accessRoles.includes(admin.role)) {
+    if (!accessRoles.includes(user.role)) {
       return res.error("You are not authorized to access to this endpont", 401);
     }
     req.user = user;
     next();
-  };
+  });
 };
