@@ -7,7 +7,7 @@ import { asyncHandler } from "../../middleWare/asyncHandler.js";
 
 
 const router = Router();
-router.use(auth([ROLES.advisor,ROLES.coach]))
+ router.use(asyncHandler(auth([ROLES.advisor,ROLES.coach])))
 
 
 router.post('/add',asyncHandler(addSupportPlan));
