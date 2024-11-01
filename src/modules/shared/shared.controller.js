@@ -1,13 +1,12 @@
 import SupportPlan from '../../../Database/models/support-Plan.model.js';
+import { ROLES } from '../../constant.js';
 import { createdSuccessfullyMessage } from '../../utils/index.js';
-// Ensure correct path
 
 export const addSupportPlan = async (req, res) => {
 
     const { title, content } = req.body;
-    const userId = req.user._id; // User ID from the token
-    const userRole = req.user.role; // User role from the token
-
+    const userId = req.user._id; 
+    const userRole = req.user.role;
     const newPlanData = {
         title,
         content,
@@ -15,25 +14,18 @@ export const addSupportPlan = async (req, res) => {
         createdByRole: userRole,
     };
 
-    // Set either advisorId or coachId based on user role
-    if (userRole === "advisor") {
+    if (userRole === ROLES.advisor) {
         newPlanData.advisorId = userId;
-    } else if (userRole === "coach") {
+    } else if (userRole === ROLES.coach) {
         newPlanData.coachId = userId;
-    } else {
-        return res.error("User role not authorized to create a support plan", 403);
     }
 
-    try {
         const newPlan = await SupportPlan.create(newPlanData);
         return res.success(
             { newPlan },
             createdSuccessfullyMessage("Support Plan"),
             201
         );
-    } catch (error) {
-        return res.error("Failed to create Support Plan", 500);
-    }
 };
 
 
