@@ -20,7 +20,7 @@ export const operationFailedMessage = (modelName, operation) =>
 export const populateCreatedBy = (obj, role, id) => {
   return {
     ...obj,
-    [ROLES_MAPPING[role]]: id,
+    ...getSearchQuery(role,id),
   };
 };
 
