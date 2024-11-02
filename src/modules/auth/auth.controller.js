@@ -149,7 +149,7 @@ export const signIn = async (req, res) => {
   if (!user) {
     return res.error(notFoundMessage("Account"), 404);
   }
-  console.log(user.isVerified)
+  
   if (user.role !== ROLES.admin && !user.isVerified) {
     return res.error("Please verify your email", 400);
   }

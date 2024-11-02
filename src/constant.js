@@ -8,3 +8,10 @@ export const ROLES ={
     coach:"coach",
     advisor:"advisor"
 }
+
+export const ROLES_MAPPING = {
+    [ROLES.advisor]: 'advisorId',
+    [ROLES.coach]: 'coachId',
+    [ROLES.admin]: 'adminId',
+    [ROLES.user]: 'userId',
+};
