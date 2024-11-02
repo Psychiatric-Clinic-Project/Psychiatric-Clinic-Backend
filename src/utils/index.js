@@ -18,9 +18,6 @@ export const operationFailedMessage = (modelName, operation) =>
   `Failed to ${operation} ${modelName}`;
 
 export const populateCreatedBy = (obj, role, id) => {
-  if (!Object.values(ROLES).includes(role)) {
-    throw new Error(`Invalid role: ${role}`);
-  }
   return {
     ...obj,
     [ROLES_MAPPING[role]]: id,
