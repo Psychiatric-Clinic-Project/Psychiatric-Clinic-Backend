@@ -18,10 +18,6 @@ const supportPlanSchema = new Schema({
     type: String,
     required: true
   },
-  createdBy: {
-    type: Types.ObjectId,
-    required: true
-  },
   createdByRole: {
     type: String,
     enum: [ROLES.advisor,ROLES.coach],

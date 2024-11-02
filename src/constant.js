@@ -2,11 +2,16 @@ export const USER_CATEGORY = ['Anxiety', 'Depression', 'Bipolar Disorder', 'PTSD
 
 export const USER_STATUS = ['Under Treatment', 'Recovered', 'No Action Taken', 'In Progress'];
 
-
-
 export const ROLES ={
     user :"user",
     admin: "admin",
     coach:"coach",
     advisor:"advisor"
 }
+
+export const ROLES_MAPPING = {
+    [ROLES.advisor]: 'advisorId',
+    [ROLES.coach]: 'coachId',
+    [ROLES.admin]: 'adminId',
+    [ROLES.user]: 'userId',
+};
