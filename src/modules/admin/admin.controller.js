@@ -7,6 +7,7 @@ import {
   deletedSuccessfullyMessage,
   notFoundMessage,
   retrievedSuccessfullyMessage,
+  updatedSuccessfullyMessage,
 } from "../../utils/index.js";
 import supportModel from "../../../Database/models/support.model.js";
 
@@ -93,10 +94,10 @@ export const responseSupport = async (req, res) => {
     return res.json(notFoundMessage("Support request"), 404);
   }
 
-  return res.status(200).json(updatedSupport);
+  return res.success({updatedSupport},updatedSuccessfullyMessage("Support request"), 200);
 }
 
 export const getSupportRequest = async (req, res) => {
   const supportRequests = await supportModel.find();
-  return res.json({ supportRequests }, retrievedSuccessfullyMessage("Support requests"), 200);
+  return res.success({ supportRequests }, retrievedSuccessfullyMessage("Support requests"), 200);
 }
