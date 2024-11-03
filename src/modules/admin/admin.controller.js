@@ -7,7 +7,9 @@ import {
   deletedSuccessfullyMessage,
   notFoundMessage,
   retrievedSuccessfullyMessage,
+  updatedSuccessfullyMessage,
 } from "../../utils/index.js";
+import { userModel } from "../../../database/models/user.model.js";
 
 export const adminSignUp = async (req, res) => {
   const { name, email, password } = req.body;
@@ -76,3 +78,29 @@ export const deleteArticle = async (req, res) => {
     200
   );
 };
+
+export const updateUser = async (req, res) => {
+  const { id } = req.params;
+
+  const updates = req.body;
+
+  const updatedUser = await userModel.findByIdAndUpdate(id, updates, { new: true });
+  if (!updatedUser) {
+    return res.json(notFoundMessage("User"), 404);
+  }
+  return res.json({updatedUser},updatedSuccessfullyMessage("User"),200);
+}
+
+export const getUsers = async (req, res) => {
+  const users = await userModel.find();
+  return res.json({ users }, retrievedSuccessfullyMessage("Users"), 200);
+}
+
+export const deleteUser = async (req, res) => {
+  const { id } = req.params;
+  const deletedUser = await userModel.findByIdAndDelete(id);
+  if (!deletedUser) {
+    return res.json(notFoundMessage("User"), 404);
+  }
+  return res.json({ deletedUser }, deletedSuccessfullyMessage("User"), 200);
+}
