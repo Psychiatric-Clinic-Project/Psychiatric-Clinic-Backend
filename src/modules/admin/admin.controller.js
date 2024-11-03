@@ -8,6 +8,7 @@ import {
   notFoundMessage,
   retrievedSuccessfullyMessage,
 } from "../../utils/index.js";
+import supportModel from "../../../Database/models/support.model.js";
 
 export const adminSignUp = async (req, res) => {
   const { name, email, password } = req.body;
@@ -76,3 +77,26 @@ export const deleteArticle = async (req, res) => {
     200
   );
 };
+
+export const responseSupport = async (req, res) => {
+  const { id } = req.params;
+  
+  const { response, status } = req.body;
+
+  const updatedSupport = await supportModel.findByIdAndUpdate(
+    id,
+    { response, status },
+    { new: true }
+  );
+
+  if (!updatedSupport) {
+    return res.json(notFoundMessage("Support request"), 404);
+  }
+
+  return res.status(200).json(updatedSupport);
+}
+
+export const getSupportRequest = async (req, res) => {
+  const supportRequests = await supportModel.find();
+  return res.json({ supportRequests }, retrievedSuccessfullyMessage("Support requests"), 200);
+}

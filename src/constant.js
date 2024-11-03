@@ -8,3 +8,5 @@ export const ROLES ={
     coach:"coach",
     advisor:"advisor"
 }
+
+export const STATUS_TYPES= ['In progress', 'In proccess', 'Closed']
