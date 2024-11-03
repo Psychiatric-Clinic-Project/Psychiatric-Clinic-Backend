@@ -7,7 +7,9 @@ import {
   deletedSuccessfullyMessage,
   notFoundMessage,
   retrievedSuccessfullyMessage,
+  updatedSuccessfullyMessage,
 } from "../../utils/index.js";
+import { coachModel } from "../../../database/models/coach.model.js";
 
 export const adminSignUp = async (req, res) => {
   const { name, email, password } = req.body;
@@ -76,3 +78,29 @@ export const deleteArticle = async (req, res) => {
     200
   );
 };
+
+export const updateCoach = async (req, res) => {
+  const { id } = req.params;
+
+  const updates = req.body;
+
+  const updatedCoach = await coachModel.findByIdAndUpdate(id, updates, { new: true });
+  if (!updatedCoach) {
+    return res.json(notFoundMessage("Coach"), 404);
+  }
+  return res.json({updatedCoach},updatedSuccessfullyMessage("Coach"),200);
+}
+
+export const getCoaches = async (req, res) => {
+  const coaches = await coachModel.find();
+  return res.json({ coaches }, retrievedSuccessfullyMessage("Coachs"), 200);
+}
+
+export const deleteCoach = async (req, res) => {
+  const { id } = req.params;
+  const deletedCoach = await coachModel.findByIdAndDelete(id);
+  if (!deletedCoach) {
+    return res.json(notFoundMessage("Coach"), 404);
+  }
+  return res.json({ deletedCoach }, deletedSuccessfullyMessage("Coach"), 200);
+}

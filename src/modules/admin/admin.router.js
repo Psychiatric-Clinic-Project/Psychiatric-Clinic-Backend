@@ -4,8 +4,11 @@ import {
   addArticle,
   adminSignUp,
   deleteArticle,
+  deleteCoach,
   getArticleById,
   getArticles,
+  getCoaches,
+  updateCoach,
 } from "./admin.controller.js";
 import { asyncHandler } from "../../middleWare/asyncHandler.js";
 import { auth } from "../../middleWare/auth.js";
@@ -28,5 +31,8 @@ router.post(
 router.get("/allArticles", asyncHandler(getArticles));
 router.delete("/deleteArticle/:id", asyncHandler(deleteArticle));
 router.get("/article/:id", asyncHandler(getArticleById));
+router.put('/update-coach/:id',asyncHandler(updateCoach))
+router.get('/get-coaches',asyncHandler(getCoaches))
+router.delete('/delete-coach/:id',asyncHandler(deleteCoach))
 
 export default router;
