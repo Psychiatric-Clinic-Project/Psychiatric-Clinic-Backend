@@ -144,29 +144,3 @@ export const deleteSupportPlan = async (req, res) => {
 
 
 
-export const addStatusReport = async (req, res) => {
-  const { title, content } = req.body;
-  const {id} =req.params;
-  const createdBy = populateCreatedBy({}, req.user.role, req.user._id);
-  const newStatusReport = await StatusReport.create({
-      ...createdBy,
-      userId:id,
-      title,
-      content,
-      createdByRole: req.user.role,
-    });
-return res.success(newStatusReport, createdSuccessfullyMessage("Status Report"), 201);  
-}
-
-export const getStatusReport = async (req, res) => {
-  const statusReport = await StatusReport.find(
-    getSearchQuery(req.user.role, req.user._id)
-  );
-  
-  return res.success(
-    statusReport,
-    retrievedSuccessfullyMessage("Status Report"),
-    200
-  );
-};
-
