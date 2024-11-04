@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { ROLES } from "../../constant.js";
 import { auth } from "../../middleWare/auth.js";
-import { addStatusReport, addSupportPlan, deleteSupportPlan, getStatusReport, getSupportPlanById, getSupportPlans, updateSupportPlan} from "./shared.controller.js";
+import { addStatusReport, addSupportPlan, addTrainingReport, deleteSupportPlan, deleteTrainingReport, getStatusReport, getSupportPlanById, getSupportPlans, getTrainingReport, updateSupportPlan, updateTrainingReport} from "./shared.controller.js";
 import { asyncHandler } from "../../middleWare/asyncHandler.js";
 
 const router = Router();
