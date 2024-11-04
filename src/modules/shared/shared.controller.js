@@ -85,6 +85,65 @@ export const deleteSupportPlan = async (req, res) => {
   return res.success(null, deletedSuccessfullyMessage("Support plan"), 200);
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const addStatusReport = async (req, res) => {
   const { title, content } = req.body;
   const {id} =req.params;
