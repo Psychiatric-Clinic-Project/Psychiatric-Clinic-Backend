@@ -51,7 +51,6 @@ export const getSessions = async (req, res) => {
 
   export const cancelUserSession = async (req, res) => {
     const { id } = req.params;
-    const userId = req.user._id;
     const updatedSession = await Session.findByIdAndUpdate(
             id,
             {
