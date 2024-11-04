@@ -1,4 +1,6 @@
+import Session from "../../../Database/models/session.model.js";
 import SupportPlan from "../../../Database/models/support-Plan.model.js";
+import { SESSION_STATUS } from "../../constant.js";
 import {
   createdSuccessfullyMessage,
   deletedSuccessfullyMessage,
@@ -83,3 +85,45 @@ export const deleteSupportPlan = async (req, res) => {
   }
   return res.success(null, deletedSuccessfullyMessage("Support plan"), 200);
 };
+
+export const addSession = async (req, res) => {
+  const { title, time } = req.body;
+
+  const createdBy = populateCreatedBy({}, req.user.role, req.user._id);
+
+  const newSession = await Session.create({
+    ...createdBy,
+    title,
+    time,
+    status: SESSION_STATUS.Pending,
+    available: true,
+    createdByRole: req.user.role,
+  });
+  return res.success(newSession, createdSuccessfullyMessage("Session"), 201);
+};
+
+export const getSessions = async (req, res) => {
+  const session = await Session.find(
+    getSearchQuery(req.user.role, req.user._id)
+  );
+  return res.success(
+    session,
+    retrievedSuccessfullyMessage("Sessions"),
+    200
+  );
+};
+
+export const deleteSession = async (req, res) => {
+  const { id } = req.params;
+  const session = await Session.findByIdAndDelete(id);
+      if (!session) {
+          return res.error(notFoundMessage("Session"), 404);
+      }
+      return res.success(
+         session ,
+          deletedSuccessfullyMessage("Session"),
+          200
+      );
+};
+
+
