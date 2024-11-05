@@ -7,7 +7,9 @@ import {
   deletedSuccessfullyMessage,
   notFoundMessage,
   retrievedSuccessfullyMessage,
+  updatedSuccessfullyMessage,
 } from "../../utils/index.js";
+import { advisorModel } from "../../../database/models/advisor.model.js";
 
 export const adminSignUp = async (req, res) => {
   const { name, email, password } = req.body;
@@ -76,3 +78,27 @@ export const deleteArticle = async (req, res) => {
     200
   );
 };
+
+export const updateAdvisor = async (req, res) => {
+  const updates = req.body;
+
+  const updatedAdvisor = await advisorModel.findByIdAndUpdate(req.params.id, updates, { new: true });
+  if (!updatedAdvisor) {
+    return res.error(notFoundMessage("Advisor"), 404);
+  }
+  return res.success(updatedAdvisor ,updatedSuccessfullyMessage("Advisor"),200);
+}
+
+export const getAdvisors = async (req, res) => {
+  const advisors = await advisorModel.find();
+  return res.success( advisors , retrievedSuccessfullyMessage("Advisors"), 200);
+}
+
+export const deleteAdvisor = async (req, res) => {
+  const { id } = req.params;
+  const deletedAdvisor = await advisorModel.findByIdAndDelete(id);
+  if (!deletedAdvisor) {
+    return res.error(notFoundMessage("Advisor"), 404);
+  }
+  return res.success( deletedAdvisor , deletedSuccessfullyMessage("Advisor"), 200);
+}
