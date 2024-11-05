@@ -3,11 +3,14 @@ import { HME, multerValidation, myMulter } from "../../services/multer.js";
 import {
   addArticle,
   adminSignUp,
+  deleteAdvisor,
   deleteArticle,
+  getAdvisors,
   getArticleById,
   getArticles,
   getSupportRequest,
   responseSupport,
+  updateAdvisor,
 } from "./admin.controller.js";
 import { asyncHandler } from "../../middleWare/asyncHandler.js";
 import { auth } from "../../middleWare/auth.js";
@@ -32,5 +35,8 @@ router.delete("/deleteArticle/:id", asyncHandler(deleteArticle));
 router.get("/article/:id", asyncHandler(getArticleById));
 router.put('/response-support/:id',asyncHandler(responseSupport))
 router.get('/support-request',asyncHandler(getSupportRequest))
+router.put('/update-advisor/:id',asyncHandler(updateAdvisor))
+router.get('/get-advisors',asyncHandler(getAdvisors))
+router.delete('/delete-advisor/:id',asyncHandler(deleteAdvisor))
 
 export default router;

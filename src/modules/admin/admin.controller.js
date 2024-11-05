@@ -10,6 +10,7 @@ import {
   updatedSuccessfullyMessage,
 } from "../../utils/index.js";
 import supportModel from "../../../Database/models/support.model.js";
+import { advisorModel } from "../../../database/models/advisor.model.js";
 
 export const adminSignUp = async (req, res) => {
   const { name, email, password } = req.body;
@@ -29,6 +30,7 @@ export const addArticle = async (req, res) => {
   const { title, text, category } = req.body;
 
   const img = await uploadFile(req.file.path);
+
   const newArticle = new articleModel({
     title,
     text,
@@ -36,19 +38,14 @@ export const addArticle = async (req, res) => {
     category,
   });
   await newArticle.save();
+  return res.success(newArticle, createdSuccessfullyMessage("Article"), 201);
 
-  return res.success(
-    { newArticle },
-    createdSuccessfullyMessage("Article"),
-    201
-  );
 };
 
 export const getArticles = async (req, res) => {
   const articles = await articleModel.find();
-
   return res.success(
-    { articles },
+    articles ,
     retrievedSuccessfullyMessage("Articles"),
     200
   );
@@ -61,27 +58,47 @@ export const getArticleById = async (req, res) => {
   if (!article) {
     return res.error(notFoundMessage("article"), 404);
   }
-  return res.success({ article }, retrievedSuccessfullyMessage("Article"), 200);
+  return res.success(article , retrievedSuccessfullyMessage("Article"), 200);
 };
 
 export const deleteArticle = async (req, res) => {
-  const { id } = req.params;
-
-  const deletedArticle = await articleModel.findOneAndDelete(id);
-
+  const deletedArticle = await articleModel.findOneAndDelete(req.params.id);
   if (!deletedArticle) {
     return res.error(notFoundMessage("article"), 404);
   }
   return res.success(
-    { deleteArticle },
+    deleteArticle,
     deletedSuccessfullyMessage("Article"),
     200
   );
 };
 
+export const updateAdvisor = async (req, res) => {
+  const updates = req.body;
+
+  const updatedAdvisor = await advisorModel.findByIdAndUpdate(req.params.id, updates, { new: true });
+  if (!updatedAdvisor) {
+    return res.error(notFoundMessage("Advisor"), 404);
+  }
+  return res.success(updatedAdvisor ,updatedSuccessfullyMessage("Advisor"),200);
+}
+
+export const getAdvisors = async (req, res) => {
+  const advisors = await advisorModel.find();
+  return res.success( advisors , retrievedSuccessfullyMessage("Advisors"), 200);
+}
+
+export const deleteAdvisor = async (req, res) => {
+  const { id } = req.params;
+  const deletedAdvisor = await advisorModel.findByIdAndDelete(id);
+  if (!deletedAdvisor) {
+    return res.error(notFoundMessage("Advisor"), 404);
+  }
+  return res.success(deletedAdvisor, deletedSuccessfullyMessage("Advisor"), 200);
+}
+
 export const responseSupport = async (req, res) => {
   const { id } = req.params;
-  
   const { response, status } = req.body;
 
   const updatedSupport = await supportModel.findByIdAndUpdate(
