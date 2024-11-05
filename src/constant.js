@@ -9,6 +9,8 @@ export const ROLES ={
     advisor:"advisor"
 }
 
+export const STATUS_TYPES= ['In progress', 'In proccess', 'Closed']
+
 export const ROLES_MAPPING = {
     [ROLES.advisor]: 'advisorId',
     [ROLES.coach]: 'coachId',

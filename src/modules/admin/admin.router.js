@@ -8,6 +8,8 @@ import {
   getAdvisors,
   getArticleById,
   getArticles,
+  getSupportRequest,
+  responseSupport,
   updateAdvisor,
 } from "./admin.controller.js";
 import { asyncHandler } from "../../middleWare/asyncHandler.js";
@@ -31,6 +33,8 @@ router.post(
 router.get("/allArticles", asyncHandler(getArticles));
 router.delete("/deleteArticle/:id", asyncHandler(deleteArticle));
 router.get("/article/:id", asyncHandler(getArticleById));
+router.put('/response-support/:id',asyncHandler(responseSupport))
+router.get('/support-request',asyncHandler(getSupportRequest))
 router.put('/update-advisor/:id',asyncHandler(updateAdvisor))
 router.get('/get-advisors',asyncHandler(getAdvisors))
 router.delete('/delete-advisor/:id',asyncHandler(deleteAdvisor))
