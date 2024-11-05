@@ -9,6 +9,7 @@ import {
   retrievedSuccessfullyMessage,
   updatedSuccessfullyMessage,
 } from "../../utils/index.js";
+import { coachModel } from "../../../database/models/coach.model.js";
 import { userModel } from "../../../database/models/user.model.js";
 import supportModel from "../../../Database/models/support.model.js";
 import { advisorModel } from "../../../database/models/advisor.model.js";
@@ -29,7 +30,6 @@ export const adminSignUp = async (req, res) => {
 
 export const addArticle = async (req, res) => {
   const { title, text, category } = req.body;
-
   const img = await uploadFile(req.file.path);
 
   const newArticle = new articleModel({
@@ -143,4 +143,29 @@ export const deleteUser = async (req, res) => {
     return res.error(notFoundMessage("User"), 404);
   }
   return res.success(deletedUser, deletedSuccessfullyMessage("User"), 200);
+}
+
+
+export const updateCoach = async (req, res) => {
+  const updates = req.body;
+
+  const updatedCoach = await coachModel.findByIdAndUpdate(req.params.id, updates, { new: true });
+  if (!updatedCoach) {
+    return res.error(notFoundMessage("Coach"), 404);
+  }
+  return res.success(updatedCoach,updatedSuccessfullyMessage("Coach"),200);
+}
+
+export const getCoaches = async (req, res) => {
+  const coaches = await coachModel.find();
+  return res.success(coaches, retrievedSuccessfullyMessage("Coachs"), 200);
+}
+
+export const deleteCoach = async (req, res) => {
+  const { id } = req.params;
+  const deletedCoach = await coachModel.findByIdAndDelete(id);
+  if (!deletedCoach) {
+    return res.error(notFoundMessage("Coach"), 404);
+  }
+  return res.success(deletedCoach, deletedSuccessfullyMessage("Coach"), 200);
 }
