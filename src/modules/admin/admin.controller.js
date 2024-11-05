@@ -9,6 +9,7 @@ import {
   retrievedSuccessfullyMessage,
   updatedSuccessfullyMessage,
 } from "../../utils/index.js";
+import { userModel } from "../../../database/models/user.model.js";
 import supportModel from "../../../Database/models/support.model.js";
 import { advisorModel } from "../../../database/models/advisor.model.js";
 
@@ -23,7 +24,7 @@ export const adminSignUp = async (req, res) => {
     password: hash,
     img,
   });
-  return res.success({ admin }, createdSuccessfullyMessage("Admin"), 201);
+  return res.success(admin, createdSuccessfullyMessage("Admin"), 201);
 };
 
 export const addArticle = async (req, res) => {
@@ -116,4 +117,30 @@ export const responseSupport = async (req, res) => {
 export const getSupportRequest = async (req, res) => {
   const supportRequests = await supportModel.find();
   return res.success(supportRequests , retrievedSuccessfullyMessage("Support requests"), 200);
+}
+
+
+export const updateUser = async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  const updatedUser = await userModel.findByIdAndUpdate(id, updates, { new: true });
+  if (!updatedUser) {
+    return res.error(notFoundMessage("User"), 404);
+  }
+  return res.success(updatedUser,updatedSuccessfullyMessage("User"),200);
+}
+
+export const getUsers = async (req, res) => {
+  const users = await userModel.find();
+  return res.success(users, retrievedSuccessfullyMessage("Users"), 200);
+}
+
+export const deleteUser = async (req, res) => {
+  const { id } = req.params;
+  const deletedUser = await userModel.findByIdAndDelete(id);
+  if (!deletedUser) {
+    return res.error(notFoundMessage("User"), 404);
+  }
+  return res.success(deletedUser, deletedSuccessfullyMessage("User"), 200);
 }
