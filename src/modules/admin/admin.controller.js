@@ -91,7 +91,7 @@ export const responseSupport = async (req, res) => {
   );
 
   if (!updatedSupport) {
-    return res.json(notFoundMessage("Support request"), 404);
+    return res.error(notFoundMessage("Support request"), 404);
   }
   return res.success(updatedSupport,updatedSuccessfullyMessage("Support request"), 200);
 }
