@@ -80,27 +80,25 @@ export const deleteArticle = async (req, res) => {
 };
 
 export const updateCoach = async (req, res) => {
-  const { id } = req.params;
-
   const updates = req.body;
 
-  const updatedCoach = await coachModel.findByIdAndUpdate(id, updates, { new: true });
+  const updatedCoach = await coachModel.findByIdAndUpdate(req.params.id, updates, { new: true });
   if (!updatedCoach) {
-    return res.json(notFoundMessage("Coach"), 404);
+    return res.error(notFoundMessage("Coach"), 404);
   }
-  return res.json({updatedCoach},updatedSuccessfullyMessage("Coach"),200);
+  return res.success({updatedCoach},updatedSuccessfullyMessage("Coach"),200);
 }
 
 export const getCoaches = async (req, res) => {
   const coaches = await coachModel.find();
-  return res.json({ coaches }, retrievedSuccessfullyMessage("Coachs"), 200);
+  return res.success({ coaches }, retrievedSuccessfullyMessage("Coachs"), 200);
 }
 
 export const deleteCoach = async (req, res) => {
   const { id } = req.params;
   const deletedCoach = await coachModel.findByIdAndDelete(id);
   if (!deletedCoach) {
-    return res.json(notFoundMessage("Coach"), 404);
+    return res.error(notFoundMessage("Coach"), 404);
   }
-  return res.json({ deletedCoach }, deletedSuccessfullyMessage("Coach"), 200);
+  return res.success({ deletedCoach }, deletedSuccessfullyMessage("Coach"), 200);
 }
