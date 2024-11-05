@@ -126,4 +126,24 @@ export const deleteSession = async (req, res) => {
       );
 };
 
+export const cancelSession = async (req, res) => {
+  const { id } = req.params;
+  const updatedSession = await Session.findByIdAndUpdate(
+          id,
+          {
+              cancelated: true 
+          },
+          { new: true } 
+      );
+      if (!updatedSession) {
+          return res.error(notFoundMessage("Session"), 404);
+      }
+      return res.success(
+         updatedSession ,
+          updatedSuccessfullyMessage("Session canceled"),
+          200
+      );
+};
+
+
 

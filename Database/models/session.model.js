@@ -39,6 +39,10 @@ const sessionSchema = new Schema(
             enum: [ROLES.advisor, ROLES.coach],
             required: true,
         },
+        cancelated:{
+            type: Boolean,
+            default: false,
+        }
     },
     {
         timestamps: true,

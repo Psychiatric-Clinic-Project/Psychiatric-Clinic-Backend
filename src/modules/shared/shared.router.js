@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { ROLES } from "../../constant.js";
 import { auth } from "../../middleWare/auth.js";
-import { addSession, addSupportPlan, deleteSession, deleteSupportPlan, getSupportPlanById, getSupportPlans, updateSupportPlan} from "./shared.controller.js";
+import { addSession, addSupportPlan, cancelSession, deleteSession, deleteSupportPlan, getSupportPlanById, getSupportPlans, updateSupportPlan} from "./shared.controller.js";
 import { asyncHandler } from "../../middleWare/asyncHandler.js";
 import { getSessions } from "../user/user.controller.js";
 
@@ -16,5 +16,6 @@ router.delete("/support-plan/:id",asyncHandler(deleteSupportPlan))
 router.post('/add-session',asyncHandler(addSession));
 router.get('/session',asyncHandler(getSessions))
 router.delete('/session/:id',asyncHandler(deleteSession))
+router.put('/session/:id',asyncHandler(cancelSession))
 
 export default router;
