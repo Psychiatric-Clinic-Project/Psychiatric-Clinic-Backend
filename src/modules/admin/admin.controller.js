@@ -93,11 +93,10 @@ export const responseSupport = async (req, res) => {
   if (!updatedSupport) {
     return res.json(notFoundMessage("Support request"), 404);
   }
-
-  return res.success({updatedSupport},updatedSuccessfullyMessage("Support request"), 200);
+  return res.success(updatedSupport,updatedSuccessfullyMessage("Support request"), 200);
 }
 
 export const getSupportRequest = async (req, res) => {
   const supportRequests = await supportModel.find();
-  return res.success({ supportRequests }, retrievedSuccessfullyMessage("Support requests"), 200);
+  return res.success(supportRequests , retrievedSuccessfullyMessage("Support requests"), 200);
 }
