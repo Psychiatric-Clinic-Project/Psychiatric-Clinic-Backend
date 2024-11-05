@@ -1,6 +1,9 @@
 import Session from "../../../Database/models/session.model.js";
 import SupportPlan from "../../../Database/models/support-Plan.model.js";
 import { SESSION_STATUS } from "../../constant.js";
+import StatusReport from "../../../Database/models/status-reports.model.js";
+import TrainingReport from "../../../Database/models/training-report.model.js";
+
 import {
   createdSuccessfullyMessage,
   deletedSuccessfullyMessage,
@@ -86,9 +89,94 @@ export const deleteSupportPlan = async (req, res) => {
   return res.success(null, deletedSuccessfullyMessage("Support plan"), 200);
 };
 
+export const addTrainingReport = async (req, res) => {
+  const { title, content } = req.body;
+  const {id} =req.params;
+  const createdBy = populateCreatedBy({}, req.user.role, req.user._id);
+  const newTrainingReport = await TrainingReport.create({
+      ...createdBy,
+      userId:id,
+      title,
+      content,
+      createdByRole: req.user.role,
+    });
+return res.success(newTrainingReport, createdSuccessfullyMessage("Training Report"), 201);  
+}
+
+export const getTrainingReport = async (req, res) => {
+  const trainingReport = await TrainingReport.find(
+    getSearchQuery(req.user.role, req.user._id)
+  );
+  return res.success(
+    trainingReport,
+    retrievedSuccessfullyMessage("Training Report"),
+    200
+  );
+};
+
+export const updateTrainingReport = async (req, res) => {
+  const { title, content } = req.body;
+
+  const updatedTrainingReport = {
+    title,
+    content,
+  };
+
+  const updatedReport = await TrainingReport.findByIdAndUpdate(
+    req.params.id,
+    updatedTrainingReport,
+    {
+      new: true,
+    }
+  );
+  if (!updatedReport) {
+    return res.error(notFoundMessage("Training report"), 404);
+  }
+  return res.success(
+    updatedReport,
+    updatedSuccessfullyMessage("Training report"),
+    200
+  );
+};
+
+export const deleteTrainingReport = async (req, res) => {
+  const deletedReport = await TrainingReport.findByIdAndDelete(req.params.id);
+  if (!deletedReport) {
+    return res.error(notFoundMessage("Training report"), 404);
+  }
+  return res.success(null, deletedSuccessfullyMessage("Training report"), 200);
+};
+
+
+export const addStatusReport = async (req, res) => {
+  const { title, content } = req.body;
+  const {id} =req.params;
+  const createdBy = populateCreatedBy({}, req.user.role, req.user._id);
+  const newStatusReport = await StatusReport.create({
+      ...createdBy,
+      userId:id,
+      title,
+      content,
+      createdByRole: req.user.role,
+    });
+return res.success(newStatusReport, createdSuccessfullyMessage("Status Report"), 201);  
+}
+
+export const getStatusReport = async (req, res) => {
+  const statusReport = await StatusReport.find(
+    getSearchQuery(req.user.role, req.user._id)
+  );
+  
+  return res.success(
+    statusReport,
+    retrievedSuccessfullyMessage("Status Report"),
+    200
+  );
+};
+
+
 export const addSession = async (req, res) => {
   const { title, time } = req.body;
-
   const createdBy = populateCreatedBy({}, req.user.role, req.user._id);
 
   const newSession = await Session.create({
@@ -144,6 +232,3 @@ export const cancelSession = async (req, res) => {
           200
       );
 };
-
-
-
