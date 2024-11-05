@@ -80,27 +80,25 @@ export const deleteArticle = async (req, res) => {
 };
 
 export const updateAdvisor = async (req, res) => {
-  const { id } = req.params;
-
   const updates = req.body;
 
-  const updatedAdvisor = await advisorModel.findByIdAndUpdate(id, updates, { new: true });
+  const updatedAdvisor = await advisorModel.findByIdAndUpdate(req.params.id, updates, { new: true });
   if (!updatedAdvisor) {
-    return res.json(notFoundMessage("Advisor"), 404);
+    return res.error(notFoundMessage("Advisor"), 404);
   }
-  return res.json({updatedAdvisor},updatedSuccessfullyMessage("Advisor"),200);
+  return res.success(updatedAdvisor ,updatedSuccessfullyMessage("Advisor"),200);
 }
 
 export const getAdvisors = async (req, res) => {
   const advisors = await advisorModel.find();
-  return res.json({ advisors }, retrievedSuccessfullyMessage("Advisors"), 200);
+  return res.success( advisors , retrievedSuccessfullyMessage("Advisors"), 200);
 }
 
 export const deleteAdvisor = async (req, res) => {
   const { id } = req.params;
   const deletedAdvisor = await advisorModel.findByIdAndDelete(id);
   if (!deletedAdvisor) {
-    return res.json(notFoundMessage("Advisor"), 404);
+    return res.error(notFoundMessage("Advisor"), 404);
   }
-  return res.json({ deletedAdvisor }, deletedSuccessfullyMessage("Advisor"), 200);
+  return res.success( deletedAdvisor , deletedSuccessfullyMessage("Advisor"), 200);
 }
