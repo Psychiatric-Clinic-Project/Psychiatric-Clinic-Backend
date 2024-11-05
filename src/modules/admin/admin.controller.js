@@ -10,6 +10,7 @@ import {
   updatedSuccessfullyMessage,
 } from "../../utils/index.js";
 import { userModel } from "../../../database/models/user.model.js";
+import supportModel from "../../../Database/models/support.model.js";
 import { advisorModel } from "../../../database/models/advisor.model.js";
 
 export const adminSignUp = async (req, res) => {
@@ -94,8 +95,30 @@ export const deleteAdvisor = async (req, res) => {
   if (!deletedAdvisor) {
     return res.error(notFoundMessage("Advisor"), 404);
   }
-  return res.success( deletedAdvisor , deletedSuccessfullyMessage("Advisor"), 200);
+  return res.success(deletedAdvisor, deletedSuccessfullyMessage("Advisor"), 200);
 }
+
+export const responseSupport = async (req, res) => {
+  const { id } = req.params;
+  const { response, status } = req.body;
+
+  const updatedSupport = await supportModel.findByIdAndUpdate(
+    id,
+    { response, status },
+    { new: true }
+  );
+
+  if (!updatedSupport) {
+    return res.error(notFoundMessage("Support request"), 404);
+  }
+  return res.success(updatedSupport,updatedSuccessfullyMessage("Support request"), 200);
+}
+
+export const getSupportRequest = async (req, res) => {
+  const supportRequests = await supportModel.find();
+  return res.success(supportRequests , retrievedSuccessfullyMessage("Support requests"), 200);
+}
+
 
 export const updateUser = async (req, res) => {
   const { id } = req.params;

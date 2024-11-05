@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./database/connection.js";
-import { adminRouter, authRouter, sharedRouter } from "./src/modules/index.router.js";
+import { adminRouter, authRouter, sharedRouter, userRouter } from "./src/modules/index.router.js";
 import { customResponse } from "./src/middleWare/customResponse.js";
 import { notFoundMessage } from "./src/utils/index.js";
 
@@ -21,6 +21,7 @@ const BASE_URL= process.env.BASE_URL;
 app.use(`${BASE_URL}admin`,adminRouter);
 app.use(`${BASE_URL}auth`,authRouter);
 app.use(`${BASE_URL}shared`,sharedRouter);
+app.use(`${BASE_URL}user`,userRouter);
 
 app.use("*", (req, res) => {
    res.error(notFoundMessage("Page"), 404);
