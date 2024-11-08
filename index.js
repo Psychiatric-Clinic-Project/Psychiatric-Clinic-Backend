@@ -23,6 +23,7 @@ app.use(`${BASE_URL}auth`,authRouter);
 app.use(`${BASE_URL}shared`,sharedRouter);
 app.use(`${BASE_URL}user`,userRouter);
 
+
 app.use("*", (req, res) => {
    res.error(notFoundMessage("Page"), 404);
 });
