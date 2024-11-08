@@ -18,19 +18,22 @@ export const notFoundMessage = (modelName) => `${modelName} not found`;
 export const operationFailedMessage = (modelName, operation) =>
   `Failed to ${operation} ${modelName}`;
 
+/**
+ * @deprecated This function is deprecated and will be removed in future releases. 
+ * Use the new alternative method instead.
+ */
 export const populateCreatedBy = (obj, role, id) => {
+  console.warn("Warning: populateCreatedBy is deprecated and will be removed in future releases.");
+  
   return {
     ...obj,
-    ...getSearchQuery(role,id),
+    ...mapToOriginId(role, id),
   };
 };
 
-export const getSearchQuery = (role, id) => ({ [ROLES_MAPPING[role]]: id });
 
-export const getAdditionalParticipants = async (authenticatedUserId) => {
-  const participants = await participantModel.find({
-    role: { $in: [ROLES.user, ROLES.advisor, ROLES.coach] },
-    _id: { $ne: authenticatedUserId }, 
-  });
-  return participants.map((participant) => participant._id);
+export const mapToOriginId = (role, id) => ({ [ROLES_MAPPING[role]]: id });
+
+export const createParticipant = async (role, id) => {
+  await participantModel.create(mapToOriginId(role, id));
 };

@@ -1,6 +1,6 @@
 import supportModel from "../../../Database/models/support.model.js";
 import Session from "../../../Database/models/session.model.js";
-import { getSearchQuery, populateCreatedBy, retrievedSuccessfullyMessage, updatedSuccessfullyMessage } from "../../utils/index.js";
+import { mapToOriginId, retrievedSuccessfullyMessage, updatedSuccessfullyMessage } from "../../utils/index.js";
 
 
 export const requestSupport = async (req, res) => {
@@ -40,7 +40,7 @@ export const selectSession = async (req, res) => {
 
 export const getSessions = async (req, res) => {
     const session = await Session.find(
-      getSearchQuery(req.user.role, req.user._id)
+      mapToOriginId(req.user.role, req.user._id)
     );
     return res.success(
         session,

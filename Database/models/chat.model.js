@@ -22,10 +22,6 @@ const chatSchema = new Schema(
         return this.isGroup; // chatName is required if it's a group chat
       },
     },
-    latestMessage: {
-      type: Types.ObjectId,
-      ref: 'Message',
-    },
   },
   {
     timestamps: true,
