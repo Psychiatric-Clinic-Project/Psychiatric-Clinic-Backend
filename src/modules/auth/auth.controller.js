@@ -7,6 +7,7 @@ import { advisorModel } from "../../../database/models/advisor.model.js";
 import { notFoundMessage, retrievedSuccessfullyMessage,createdSuccessfullyMessage } from "../../utils/index.js";
 import { ROLES } from "../../constant.js";
 import sendEmail from "../../utils/email.js";
+import participantModel from "../../../Database/models/participant .model.js";
 
 
 
@@ -27,6 +28,11 @@ export const userSignUp = async (req, res) => {
         phoneNumber,
     });
     await newUser.save();
+    const newParticipant = new participantModel({
+      userId: newUser._id,
+      role: ROLES.user,
+    });
+      await newParticipant.save();
     const token = jwt.sign({ userId: newUser._id,role:ROLES.user }, process.env.LOGINTOKEN, { expiresIn: "1h" });
     const verificationUrl = `${req.protocol}://${req.headers.host}${process.env.BASE_URL}auth/verify-email/${token}`;
     await sendEmail(username, email, verificationUrl);
@@ -53,6 +59,11 @@ export const advisorSignUp = async (req, res) => {
     skills,
   });
   await newAdvisor.save();
+  const newParticipant = new participantModel({
+    advisorId: newAdvisor._id,
+    role: ROLES.advisor,
+  });
+    await newParticipant.save();
 
   const token = jwt.sign({ userId: newAdvisor._id, role: "advisor" }, process.env.LOGINTOKEN, { expiresIn: "1h" });
   const verificationUrl = `${req.protocol}://${req.headers.host}${process.env.BASE_URL}auth/verify-email/${token}`;
@@ -81,6 +92,11 @@ export const coachSignUp = async (req, res) => {
   });
   await newCoach.save();
 
+  const newParticipant = new participantModel({
+    coachId: newCoach._id,
+    role: ROLES.coach,
+  });
+    await newParticipant.save();
   const token = jwt.sign({ userId: newCoach._id, role: "coach" }, process.env.LOGINTOKEN, { expiresIn: "1h" });
   const verificationUrl = `${req.protocol}://${req.headers.host}${process.env.BASE_URL}auth/verify-email/${token}`;
 
