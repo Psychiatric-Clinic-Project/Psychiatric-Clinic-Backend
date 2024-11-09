@@ -17,7 +17,7 @@ const advisorSchema = new Schema(
     },
     isVerified: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     isBlocked: {
       type: Boolean,
