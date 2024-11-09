@@ -8,7 +8,7 @@ const postSchema = new Schema({
         required: true
     },
     likes: [{ type: Types.ObjectId, ref: "User" }],
-    unlike: [{ type: Types.ObjectId, ref: "User" }],
+    unlikes: [{ type: Types.ObjectId, ref: "User" }],
     text: String,
     image: Array,
     category: USER_CATEGORY,

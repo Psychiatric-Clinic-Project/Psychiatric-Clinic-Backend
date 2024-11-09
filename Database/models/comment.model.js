@@ -13,7 +13,7 @@ const commentSchema = new Schema({
     },
     text: String,
     image: String,
-    unlike: [{ type: Types.ObjectId, ref: "User" }],
+    unlikes: [{ type: Types.ObjectId, ref: "User" }],
     likes: [{ type: Types.ObjectId, ref: "User" }],
 }, { timestamps: true });
 

@@ -13,7 +13,7 @@ const responseSchema = new Schema({
     text: String,
     image: String,
     likes: [{ type: Types.ObjectId, ref: "User" }],
-    unlike: [{ type: Types.ObjectId, ref: "User" }],
+    unlikes: [{ type: Types.ObjectId, ref: "User" }],
 }, { timestamps: true });
 
 const Response = model("Response", responseSchema);
