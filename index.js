@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./database/connection.js";
-import { adminRouter, authRouter, sharedRouter, userRouter } from "./src/modules/index.router.js";
+import { adminRouter, authRouter, chatRouter, sharedRouter, userRouter } from "./src/modules/index.router.js";
 import { customResponse } from "./src/middleWare/customResponse.js";
 import { notFoundMessage } from "./src/utils/index.js";
 
@@ -22,6 +22,7 @@ app.use(`${BASE_URL}admin`,adminRouter);
 app.use(`${BASE_URL}auth`,authRouter);
 app.use(`${BASE_URL}shared`,sharedRouter);
 app.use(`${BASE_URL}user`,userRouter);
+app.use(`${BASE_URL}chat`,chatRouter);
 
 
 app.use("*", (req, res) => {
