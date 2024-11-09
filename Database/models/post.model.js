@@ -7,24 +7,12 @@ const postSchema = new Schema({
         ref: 'User',
         required: true
     },
-    likes:
-    {
-        type: Number,
-        default: 0
-    },
-    unlikes:
-    {
-        type: Number,
-        default: 0
-    },
+    likes: [{ type: Types.ObjectId, ref: "User" }],
+    unlike: [{ type: Types.ObjectId, ref: "User" }],
     text: String,
-    image: String,
+    image: Array,
     category: USER_CATEGORY,
-    shares: 
-    {
-        type: Number,
-        default: 0
-    },
+    shares:  [{ type: Types.ObjectId, ref: "User" }],
 }, { timestamps: true });
 
 const Post = model("Post", postSchema);

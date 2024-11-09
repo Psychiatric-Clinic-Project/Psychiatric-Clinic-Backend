@@ -9,10 +9,13 @@ const router = Router();
 
 router.use(auth([ROLES.user]))
 
-router.post('/create-post', myMulter(multerValidation.image).single("image"),HME,asyncHandler(createPost))
+router.post('/create-post', myMulter(multerValidation.image).array('image',5),HME,asyncHandler(createPost))
+/*
+* @see there is an issue at this enpoint
+*/
 router.get('/get-post',asyncHandler(getPosts) )
-router.get('/get-post/:id',asyncHandler(getPostById) )
-router.put('/update-post/:id',myMulter(multerValidation.image).single("image"),HME,asyncHandler(updatePost) )
+router.get('/get-post/:id',asyncHandler(getPostById))
+router.put('/update-post/:id',asyncHandler(updatePost))
 router.delete('/delete-post/:id',asyncHandler(deletePost))
 router.patch('/like-post/:id',asyncHandler(likePost))
 router.patch('/unlike-post/:id',asyncHandler(unlikePost))

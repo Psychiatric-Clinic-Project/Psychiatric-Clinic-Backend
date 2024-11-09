@@ -13,14 +13,8 @@ const commentSchema = new Schema({
     },
     text: String,
     image: String,
-    likes: {
-        type: Number,
-        default: 0
-    },
-    unlikes: {
-        type: Number,
-        default: 0
-    }
+    unlike: [{ type: Types.ObjectId, ref: "User" }],
+    likes: [{ type: Types.ObjectId, ref: "User" }],
 }, { timestamps: true });
 
 const Comment = model("Comment", commentSchema);

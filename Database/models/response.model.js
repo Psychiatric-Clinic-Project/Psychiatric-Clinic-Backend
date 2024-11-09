@@ -12,15 +12,8 @@ const responseSchema = new Schema({
     },
     text: String,
     image: String,
-    likes: {
-        type: Number,
-        default: 0
-    },
-    unlikes:
-    {
-        type: Number,
-        default: 0
-    },
+    likes: [{ type: Types.ObjectId, ref: "User" }],
+    unlike: [{ type: Types.ObjectId, ref: "User" }],
 }, { timestamps: true });
 
 const Response = model("Response", responseSchema);
