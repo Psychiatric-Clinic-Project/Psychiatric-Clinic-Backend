@@ -1,4 +1,4 @@
-import { ROLES, ROLES_MAPPING } from "../constant.js";
+import { ROLES_MAPPING } from "../constant.js";
 
 export const createdSuccessfullyMessage = (modelName) =>
   `${modelName} created successfully`;
@@ -25,3 +25,6 @@ export const populateCreatedBy = (obj, role, id) => {
 };
 
 export const getSearchQuery = (role, id) => ({ [ROLES_MAPPING[role]]: id });
+
+export const duplicateMessage = (modelName) =>
+  `${modelName} duplicated`;

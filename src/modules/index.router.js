@@ -2,5 +2,6 @@ import authRouter from "./auth/auth.router.js";
 import adminRouter from './admin/admin.router.js'
 import userRouter from './user/user.router.js'
 import sharedRouter from './shared/shared.router.js'
+import postRouter from './post/post.router.js'
 
-export { authRouter, adminRouter, userRouter, sharedRouter } 
+export { authRouter, adminRouter, userRouter, sharedRouter,postRouter } 
