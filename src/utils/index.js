@@ -1,5 +1,5 @@
 import participantModel from "../../Database/models/participant .model.js";
-import { ROLES, ROLES_MAPPING } from "../constant.js";
+import { ROLES_MAPPING } from "../constant.js";
 
 export const createdSuccessfullyMessage = (modelName) =>
   `${modelName} created successfully`;
