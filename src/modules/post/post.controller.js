@@ -25,7 +25,6 @@ export const createPost = async (req, res) => {
   return res.success(newPost, createdSuccessfullyMessage("Post"), 201);
 };
 
-// as i saw in the post model there is an attribute called category, which should we retrieve posts depnding on its?
 export const getPosts = async (req, res) => {
   const posts = await Post.find().sort({ createdAt: -1 });
   return res.success(posts, retrievedSuccessfullyMessage("Posts"), 200);

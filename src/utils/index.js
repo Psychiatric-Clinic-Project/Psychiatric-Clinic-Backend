@@ -25,6 +25,3 @@ export const populateCreatedBy = (obj, role, id) => {
 };
 
 export const getSearchQuery = (role, id) => ({ [ROLES_MAPPING[role]]: id });
-
-export const duplicateMessage = (modelName) =>
-  `${modelName} duplicated`;

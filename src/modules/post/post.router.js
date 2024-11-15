@@ -7,16 +7,12 @@ import { ROLES } from "../../constant.js";
 
 const router = Router();
 
-
-router.get('/get-post',auth([ROLES.admin]),asyncHandler(getPosts) )
-
+router.get('/get-post',auth([ROLES.admin,ROLES.user]),asyncHandler(getPosts) )
+router.delete('/delete-post/:id',auth([ROLES.admin,ROLES.user]),asyncHandler(deletePost))
 
 router.use(auth([ROLES.user]))
-
 router.post('/create-post', myMulter(multerValidation.image).array('image',5),HME,asyncHandler(createPost))
-router.get('/get-post/:id',asyncHandler(getPostById))
 router.put('/update-post/:id',asyncHandler(updatePost))
-router.delete('/delete-post/:id',asyncHandler(deletePost))
 router.patch('/like-post/:id',asyncHandler(likePost))
 router.patch('/unlike-post/:id',asyncHandler(unlikesPost))
 router.patch('/share-post/:id',asyncHandler(sharePost))
@@ -38,6 +34,5 @@ router.patch('/unlike-reply/:id',asyncHandler(unlikesReply))
 router.post('/create-share/:postId',asyncHandler(createShare))
 router.get('/get-shares-by-post/:postId',asyncHandler(getSharesByPost))
 router.delete('/delete-share/:id',asyncHandler(deleteShare))
-
 
 export default router;
