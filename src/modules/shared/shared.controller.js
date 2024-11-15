@@ -7,7 +7,7 @@ import TrainingReport from "../../../Database/models/training-report.model.js";
 import {
   createdSuccessfullyMessage,
   deletedSuccessfullyMessage,
-  getSearchQuery,
+  mapToOriginId,
   notFoundMessage,
   populateCreatedBy,
   retrievedSuccessfullyMessage,
@@ -44,7 +44,7 @@ export const getSupportPlanById = async (req, res) => {
 
 export const getSupportPlans = async (req, res) => {
   const supportPlan = await SupportPlan.find(
-    getSearchQuery(req.user.role, req.user._id)
+    mapToOriginId(req.user.role, req.user._id)
   );
   return res.success(
     supportPlan,
@@ -105,7 +105,7 @@ return res.success(newTrainingReport, createdSuccessfullyMessage("Training Repor
 
 export const getTrainingReport = async (req, res) => {
   const trainingReport = await TrainingReport.find(
-    getSearchQuery(req.user.role, req.user._id)
+    mapToOriginId(req.user.role, req.user._id)
   );
   return res.success(
     trainingReport,
@@ -164,7 +164,7 @@ return res.success(newStatusReport, createdSuccessfullyMessage("Status Report"),
 
 export const getStatusReport = async (req, res) => {
   const statusReport = await StatusReport.find(
-    getSearchQuery(req.user.role, req.user._id)
+    mapToOriginId(req.user.role, req.user._id)
   );
   
   return res.success(
@@ -192,7 +192,7 @@ export const addSession = async (req, res) => {
 
 export const getSessions = async (req, res) => {
   const session = await Session.find(
-    getSearchQuery(req.user.role, req.user._id)
+    mapToOriginId(req.user.role, req.user._id)
   );
   return res.success(
     session,

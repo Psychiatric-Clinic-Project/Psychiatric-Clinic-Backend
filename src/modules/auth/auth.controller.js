@@ -4,11 +4,9 @@ import { adminModel } from "../../../database/models/admin.model.js";
 import { coachModel } from "../../../database/models/coach.model.js";
 import { userModel } from "../../../database/models/user.model.js";
 import { advisorModel } from "../../../database/models/advisor.model.js";
-import { notFoundMessage, retrievedSuccessfullyMessage,createdSuccessfullyMessage } from "../../utils/index.js";
+import { notFoundMessage, retrievedSuccessfullyMessage,createdSuccessfullyMessage, createParticipant } from "../../utils/index.js";
 import { ROLES } from "../../constant.js";
 import sendEmail from "../../utils/email.js";
-
-
 
 export const userSignUp = async (req, res) => {
     const { username, email, password, age, category, phoneNumber } = req.body;
@@ -27,11 +25,11 @@ export const userSignUp = async (req, res) => {
         phoneNumber,
     });
     await newUser.save();
-    const token = jwt.sign({ userId: newUser._id,role:ROLES.user }, process.env.LOGINTOKEN, { expiresIn: "1h" });
+    createParticipant(newUser.role,newUser._id)
+    const token = jwt.sign({ userId: newUser._id,role:ROLES.user }, process.env.LOGINTOKEN, { expiresIn: "24h" });
     const verificationUrl = `${req.protocol}://${req.headers.host}${process.env.BASE_URL}auth/verify-email/${token}`;
     await sendEmail(username, email, verificationUrl);
     return res.success({userId: newUser._id, token },createdSuccessfullyMessage("User"),201)
-
 };
 
 export const advisorSignUp = async (req, res) => {
@@ -53,7 +51,7 @@ export const advisorSignUp = async (req, res) => {
     skills,
   });
   await newAdvisor.save();
-
+  createParticipant(newAdvisor.role,newAdvisor._id)
   const token = jwt.sign({ userId: newAdvisor._id, role: "advisor" }, process.env.LOGINTOKEN, { expiresIn: "1h" });
   const verificationUrl = `${req.protocol}://${req.headers.host}${process.env.BASE_URL}auth/verify-email/${token}`;
 
@@ -80,7 +78,7 @@ export const coachSignUp = async (req, res) => {
     skills,
   });
   await newCoach.save();
-
+  createParticipant(newCoach.role,newCoach._id)
   const token = jwt.sign({ userId: newCoach._id, role: "coach" }, process.env.LOGINTOKEN, { expiresIn: "1h" });
   const verificationUrl = `${req.protocol}://${req.headers.host}${process.env.BASE_URL}auth/verify-email/${token}`;
 
